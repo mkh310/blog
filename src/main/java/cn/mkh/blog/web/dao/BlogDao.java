@@ -34,6 +34,8 @@ public interface BlogDao {
     List<Blog> findAll();
 
 
+
+
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     @Insert("INSERT INTO blog (" +
             "  `title`," +
@@ -113,10 +115,13 @@ public interface BlogDao {
     @Select("SELECT  " +
             "b.* " +
             "FROM " +
-            "  blog b,blogs_tags bt,TYPE t,tag tg " +
+            "  blog b,blogs_tags bt,type t,tag tg " +
             "WHERE " +
-            "  b.`t_type`  = t.`id` AND tg.`id` = bt.`tag_id` AND b.`id` = bt.blog_id AND CONCAT(b.`title`,b.`content`,b.`description`,t.`name`,tg.`name`) LIKE #{content} group by b.id")
+            "  b.`t_type`  = t.`id` AND tg.`id` = bt.`tag_id` AND b.`id` = bt.blog_id AND CONCAT(b.`title`,b.`content`,b.`description`,t.`name`,tg.`name`) LIKE #{content} and published = true group by b.id")
     @ResultMap("blog")
     List<Blog> findBySearch(String content);
 
+    @Select("select * from blog where published = true order by updateTime desc")
+    @ResultMap("blog")
+    List<Blog> findAllPublished();
 }

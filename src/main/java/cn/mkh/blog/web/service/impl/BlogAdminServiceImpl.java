@@ -87,4 +87,12 @@ public class BlogAdminServiceImpl implements BlogAdminService {
         PageHelper.startPage(pageNum,pageSize);
         return blogDao.findBySearch("%"+content+"%");
     }
+
+    @Override
+    public List<Blog> findAllPublished(Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum,pageSize);
+        return blogDao.findAllPublished();
+    }
+
+
 }

@@ -21,4 +21,7 @@ public interface BlogAdminService {
 
     //通过搜索查找
     List<Blog> findBySearch(Integer pageNum, Integer pageSize, String content);
+
+
+    List<Blog> findAllPublished(Integer pageNum, Integer pageSize);
 }
