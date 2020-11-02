@@ -1,0 +1,55 @@
+spring:
+  profiles:
+    active: dev
+pagehelper:
+#  设置默认会进行统计查询，可能导致无法查出数据的BUG
+  default-count: true
+#  为true时，pagesize=0会查出所有数据
+  page-size-zero: true
+#  参数合理化，页码小于1或者大于总数会不进行查询
+  reasonable: true
+mybatis:
+  configuration:
+    lazy-loading-enabled: true
+    aggressive-lazy-loading: false
+server:
+  tomcat:
+    uri-encoding: utf-8
+---
+spring:
+#  指定当前配置文件所属环境
+  profiles: dev
+#  配置数据库相关
+  datasource:
+    url: jdbc:mysql://192.168.5.188:3306/myblog?characterEncoding=UTF-8&serverTimezone=GMT%2B8
+#    指定连接池类型
+    type: com.alibaba.druid.pool.DruidDataSource
+    username: 'root'
+    password: '123456'
+  thymeleaf:
+    cache: false
+server:
+  port: 8080
+#  配置日志相关内容
+logging:
+  level:
+    root: info
+    cn.mkh: debug
+  config: classpath:logback-spring.xml
+  file:
+    path: /log
+
+
+---
+spring:
+  profiles: prod
+server:
+  port: 8080
+logging:
+  level:
+    root: info
+    cn.mkh: info
+  config: classpath:logback-spring.xml
+  file:
+    path: D:/data/log
+
