@@ -14,12 +14,44 @@ public class Comment {
     private Date createTime;//创建时间
 
     //所属博客
-    private Blog blog;
+    private Integer blogId;
     //回复的评论
-    private List<Comment> replyComments = new ArrayList<>();
+    private List<Comment> replyComments;
+    //回复的对方昵称
+    private String commentNickname;
 
     //父评论
     private Comment parentComment;
+    //父评论Id
+    private Integer parentCommentId;
+    //顶级评论Id
+    private Integer fatherCommentId;
+    //是否是博主评论
+    private Boolean adminComment;
+
+    public Boolean getAdminComment() {
+        return adminComment;
+    }
+
+    public void setAdminComment(Boolean adminComment) {
+        this.adminComment = adminComment;
+    }
+
+    public String getCommentNickname() {
+        return commentNickname;
+    }
+
+    public void setCommentNickname(String commentNickname) {
+        this.commentNickname = commentNickname;
+    }
+
+    public Integer getParentCommentId() {
+        return parentCommentId;
+    }
+
+    public void setParentCommentId(Integer parentCommentId) {
+        this.parentCommentId = parentCommentId;
+    }
 
     public Integer getId() {
         return id;
@@ -69,12 +101,12 @@ public class Comment {
         this.createTime = createTime;
     }
 
-    public Blog getBlog() {
-        return blog;
+    public Integer getBlogId() {
+        return blogId;
     }
 
-    public void setBlog(Blog blog) {
-        this.blog = blog;
+    public void setBlogId(Integer blogId) {
+        this.blogId = blogId;
     }
 
     public List<Comment> getReplyComments() {
@@ -93,6 +125,14 @@ public class Comment {
         this.parentComment = parentComment;
     }
 
+    public Integer getFatherCommentId() {
+        return fatherCommentId;
+    }
+
+    public void setFatherCommentId(Integer fatherCommentId) {
+        this.fatherCommentId = fatherCommentId;
+    }
+
     @Override
     public String toString() {
         return "Comment{" +
@@ -102,6 +142,10 @@ public class Comment {
                 ", content='" + content + '\'' +
                 ", avatar='" + avatar + '\'' +
                 ", createTime=" + createTime +
+                ", blogId=" + blogId +
+                ", replyComments=" + replyComments +
+                ", parentComment=" + parentComment +
+                ", fatherCommentId=" + fatherCommentId +
                 '}';
     }
 }
