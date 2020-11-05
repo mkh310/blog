@@ -3,6 +3,7 @@ package cn.mkh.blog.web.service;
 import cn.mkh.blog.web.domain.Blog;
 
 import java.util.List;
+import java.util.Map;
 
 public interface BlogAdminService {
     List<Blog> findAll(Integer pageNum, Integer pageSize);
@@ -24,4 +25,14 @@ public interface BlogAdminService {
 
 
     List<Blog> findAllPublished(Integer pageNum, Integer pageSize);
+
+    List<Blog> findBlogByTypeId(Integer pageNum, Integer pageSize, Integer typeId);
+
+    void updateBlogViews(Integer id);
+
+    List<Blog> findBlogByTagId(Integer pageNum, Integer pageSize, Integer id);
+
+    Map<String, List<Blog>> findBlogsArchives();
+
+    Integer findBlogCount();
 }

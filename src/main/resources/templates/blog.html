@@ -445,10 +445,10 @@
             </div>
 
             <!--赞赏-->
-            <div class="ui center aligned basic segment">
+            <div th:if="${blog.appreciation}" class="ui center aligned basic segment">
                 <button id="payButton" class="ui orange basic circular button">赞赏</button>
             </div>
-            <div class="ui payQR flowing popup transition hidden">
+            <div th:if="${blog.appreciation}" class="ui payQR flowing popup transition hidden">
                 <div class="ui orange basic label">
                     <div class="ui images" style="font-size: inherit !important;">
                         <div class="image">
@@ -468,7 +468,7 @@
             </div>
 
         </div>
-        <div class="ui attached positive message">
+        <div th:if="${blog.shareStatement}" class="ui attached positive message">
             <!--博客信息-->
             <div class="ui middle aligned grid">
                 <div class="eleven wide column">
@@ -491,7 +491,7 @@
         </div>
 
         <!--留言区域列表-->
-        <div id="comment-container" class="ui teal segment">
+        <div id="comment-container" th:if="${blog.commentabled}" class="ui teal segment">
             <div th:fragment="commentList">
                 <!--                <div class="ui teal segment">-->
                 <div class="ui threaded comments">
@@ -612,7 +612,7 @@
 
         </div>
         <!--            </div>-->
-        <div class="ui form">
+        <div th:if="${blog.commentabled}" class="ui form">
             </br>
             <input type="hidden" th:value="${blog.id}" name="blogId">
             <input type="hidden" name="parentCommentId" value="-1">
@@ -683,7 +683,8 @@
 <!--/*/</th:block>/*/-->
 
 
-<script>
+
+<script th:inline="javascript">
 
     $('.menu.toggle').click(function () {
         $('.m-item').toggleClass('m-mobile-hide');
@@ -781,7 +782,7 @@
 
     //发送评论请求
     function postData() {
-        $("#comment-container").load(/*[[@{/comments}]]*/"/comments", {
+        $("#comment-container").load(/*[[@{/comments}]]*/"", {
             "parentCommentId": $("[name='parentCommentId']").val(),
             "blogId": $("[name='blogId']").val(),
             "nickname": $("[name='nickname']").val(),
@@ -841,7 +842,7 @@
 
     //加载评论内容
     $(function () {
-        $("#comment-container").load(/*[[@{/comments/{id}(id=${blog.id})}]]*/"/comments/1");
+        $("#comment-container").load(/*[[@{/comments/{id}(id=${blog.id})}]]*/"");
     });
 
 

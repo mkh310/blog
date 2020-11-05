@@ -8,6 +8,7 @@ import cn.mkh.blog.web.service.BlogAdminService;
 import cn.mkh.blog.web.service.TagsService;
 import cn.mkh.blog.web.service.TypesService;
 import com.github.pagehelper.PageInfo;
+import org.apache.ibatis.annotations.Many;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,7 +29,7 @@ public class IndexController {
     @GetMapping("")
     public String toIndexPage(Model model,
                               @RequestParam(required = false, defaultValue = "1") Integer pageNum,
-                              @RequestParam(required = false, defaultValue = "3") Integer pageSize) {
+                              @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
         List<Blog> blogs = blogAdminService.findAllPublished(pageNum, pageSize);
         PageInfo<Blog> blogPageInfo = new PageInfo<>(blogs);
         List<Tag> tagsTop = tagsService.findTagsTop(7);
@@ -55,9 +56,21 @@ public class IndexController {
 
     @GetMapping("/blog/{id}")
     public String toBlogDetailPage(@PathVariable("id") Integer id,Model model){
+        blogAdminService.updateBlogViews(id);
         Blog blogById = blogAdminService.findBlogById(id);
         blogById.setContent(MarkdownUtils.markdownToHtmlExtensions(blogById.getContent()));
         model.addAttribute("blog",blogById);
         return "blog";
+    }
+
+    @GetMapping("/about")
+    public String toAboutPage(){
+        return "about";
+    }
+
+    @GetMapping("/foot/recommendBlog")
+    public String footerRecommendBlog(Model model){
+        model.addAttribute("blogs",blogAdminService.findRecommendBlogs(3));
+        return "_fragments :: newblogList";
     }
 }

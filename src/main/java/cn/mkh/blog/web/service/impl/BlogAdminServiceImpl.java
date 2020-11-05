@@ -1,7 +1,7 @@
 package cn.mkh.blog.web.service.impl;
 
 import cn.mkh.blog.web.dao.BlogDao;
-import cn.mkh.blog.web.dao.CommentDao;
+import cn.mkh.blog.web.dao.CommentsDao;
 import cn.mkh.blog.web.dao.TagDao;
 import cn.mkh.blog.web.domain.Blog;
 import cn.mkh.blog.web.service.BlogAdminService;
@@ -10,8 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class BlogAdminServiceImpl implements BlogAdminService {
@@ -23,7 +22,7 @@ public class BlogAdminServiceImpl implements BlogAdminService {
     TagDao tagDao;
 
     @Autowired
-    CommentDao commentDao;
+    CommentsDao commentDao;
 
     @Override
     public List<Blog> findAll(Integer pageNum, Integer pageSize) {
@@ -92,6 +91,38 @@ public class BlogAdminServiceImpl implements BlogAdminService {
     public List<Blog> findAllPublished(Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum,pageSize);
         return blogDao.findAllPublished();
+    }
+
+    @Override
+    public List<Blog> findBlogByTypeId(Integer pageNum, Integer pageSize, Integer typeId) {
+        PageHelper.startPage(pageNum,pageSize);
+        return blogDao.findBlogsByTypeId(typeId);
+    }
+
+    @Override
+    public void updateBlogViews(Integer id) {
+        blogDao.updateBlogViews(id);
+    }
+
+    @Override
+    public List<Blog> findBlogByTagId(Integer pageNum, Integer pageSize, Integer id) {
+        PageHelper.startPage(pageNum,pageSize);
+        return blogDao.findBlogsByTagId(id);
+    }
+
+    @Override
+    public Map<String, List<Blog>> findBlogsArchives() {
+        List<String>  years = blogDao.findGroupYear();
+        Map<String, List<Blog>> map = new LinkedHashMap<>();
+        for (String year : years) {
+                map.put(year,blogDao.findBlogByYear(year));
+        }
+        return map;
+    }
+
+    @Override
+    public Integer findBlogCount() {
+        return blogDao.findBlogCount();
     }
 
 

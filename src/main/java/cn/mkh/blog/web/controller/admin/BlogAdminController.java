@@ -53,7 +53,7 @@ public class BlogAdminController {
                                @RequestParam(name = "typeId",required = false)String typeId,
                                @RequestParam(name = "recommend")boolean recommend,
                                @RequestParam(required = false,defaultValue = "1",name = "page")int pageNum,
-                               @RequestParam(required = false,defaultValue = "3")int pageSize,
+                               @RequestParam(required = false,defaultValue = "5")int pageSize,
                                Model model){
         List<Blog> blogs = blogservice.findByCondition(title,typeId,recommend,pageNum,pageSize);
         PageInfo pageInfo = new PageInfo(blogs);

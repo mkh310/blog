@@ -57,4 +57,10 @@ public interface CommentsDao {
             " #{adminComment} "+
             "  );")
     void addComment(Comment comment);
+
+    @Select("select * from comment where blog_id = #{id}")
+    public List<Comment> findByBlogId(Integer id);
+
+    @Delete("delete  from comment where blog_id = #{id}")
+    public void delCommentByBlogId(@Param("id") Integer id);
 }

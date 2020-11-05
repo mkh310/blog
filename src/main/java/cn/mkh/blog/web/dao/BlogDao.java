@@ -29,7 +29,7 @@ public interface BlogDao {
             //column指定用Blog表中的什么字段去查，property指定类中的属性，Many指定调用什么方法
             @Result(column = "id", property = "tags", javaType = List.class, many = @Many(select = "cn.mkh.blog.web.dao.TagDao.findByBlogId")),
             @Result(column = "u_user", property = "user", javaType = User.class, one = @One(select = "cn.mkh.blog.web.dao.UserDao.findUserById")),
-            @Result(column = "id", property = "comments", javaType = List.class, many = @Many(select = "cn.mkh.blog.web.dao.CommentDao.findByBlogId"))
+            @Result(column = "id", property = "comments", javaType = List.class, many = @Many(select = "cn.mkh.blog.web.dao.CommentsDao.findByBlogId"))
     })
     List<Blog> findAll();
 
@@ -50,7 +50,8 @@ public interface BlogDao {
             "  `t_type`,"+
             "  `u_user`, "+
             "  `description`,"+
-            "  updateTime"+
+            "  updateTime,"+
+            " flag"+
             ") " +
             "VALUES" +
             "(" +
@@ -66,7 +67,8 @@ public interface BlogDao {
             "#{typeId}," +
             "#{user.id}," +
             "#{description}," +
-            "#{updateTime}"+
+            "#{updateTime},"+
+            "#{flag}"+
             "  ) ;")
     void addBlog(Blog blog);
 
@@ -99,7 +101,7 @@ public interface BlogDao {
     void deleteBlog(Integer id);
 
     @Select({"<script>",
-            "select * from blog",
+            "select * from blog order by updateTime desc",
             "<where>",
             "<if test='title != null and title !=\"%%\" '>and title like #{title}</if>",
             "<if test='typeId != null and typeId !=\"\" '>and t_type = #{typeId}</if>",
@@ -109,7 +111,7 @@ public interface BlogDao {
     @ResultMap("blog")
     List<Blog> findByCondition(String title, String typeId, boolean recommend);
 
-    @Select("select * from blog where recommend = true ORDER BY updateTime DESC limit 0,#{i}")
+    @Select("select * from blog where recommend = true and published = true ORDER BY updateTime DESC limit 0,#{i}")
     List<Blog> findRecommendBlogs(int i);
 
     @Select("SELECT  " +
@@ -117,11 +119,43 @@ public interface BlogDao {
             "FROM " +
             "  blog b,blogs_tags bt,type t,tag tg " +
             "WHERE " +
-            "  b.`t_type`  = t.`id` AND tg.`id` = bt.`tag_id` AND b.`id` = bt.blog_id AND CONCAT(b.`title`,b.`content`,b.`description`,t.`name`,tg.`name`) LIKE #{content} and published = true group by b.id")
+            "  b.`t_type`  = t.`id` AND tg.`id` = bt.`tag_id` AND b.`id` = bt.blog_id " +
+            "AND CONCAT(b.`title`,b.`content`,b.`description`,t.`name`,tg.`name`) LIKE #{content} " +
+            "and published = true " +
+            "group by b.id"+
+            " order by b.updateTime desc "
+    )
     @ResultMap("blog")
     List<Blog> findBySearch(String content);
 
     @Select("select * from blog where published = true order by updateTime desc")
     @ResultMap("blog")
     List<Blog> findAllPublished();
+
+    @Select("SELECT * FROM blog WHERE blog.`t_type` = #{typeId} and published = true  order by updateTime desc")
+    @ResultMap("blog")
+    List<Blog> findBlogsByTypeId(Integer typeId);
+
+    @Update("UPDATE blog SET views = views+1 WHERE id = #{id}")
+    void updateBlogViews(Integer id);
+
+    @Select("SELECT b.* FROM blog b,blogs_tags bt WHERE bt.`blog_id` = b.id AND bt.`tag_id` = #{id} and published = true order by updateTime desc")
+    @ResultMap("blog")
+    List<Blog> findBlogsByTagId(Integer id);
+
+    @Select("SELECT " +
+            " DATE_FORMAT(b.`updateTime`,'%Y') YEAR " +
+            " " +
+            "FROM blog b " +
+            " where published = true " +
+            "GROUP BY  YEAR  " +
+            "ORDER BY YEAR desc;")
+    List<String> findGroupYear();
+
+    @Select("SELECT * FROM blog b WHERE DATE_FORMAT(b.`updateTime`,'%Y') = #{year} and published = true ")
+    @ResultMap("blog")
+    List<Blog> findBlogByYear(String year);
+
+    @Select("select count(id) from blog where published = true")
+    Integer findBlogCount();
 }
